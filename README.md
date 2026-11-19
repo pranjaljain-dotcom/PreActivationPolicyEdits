@@ -56,7 +56,7 @@ pnpm run preview
 
 ## Status
 
-Scaffolded from the Quoter prototype's config (Vite/Tailwind/Figma Make setup, fonts, GitHub Pages deploy) with the shared `Sidebar` component reused verbatim for the Customer 360 side panel. The actual policy-edit screens (payment schedule edits, premium-paying flows, manage customer payment) are being built out frame-by-frame from the Figma file above — `App.tsx` currently only renders the sidebar shell.
+Built out from the Quoter prototype's config (Vite/Tailwind/Figma Make setup, fonts, GitHub Pages deploy) with the shared `Sidebar` component reused verbatim for the Customer 360 side panel. The policy page and payment-schedule edit flow (SSB / business-day / calendar-day routing, coverage start date edit, payment method edit, e-sign + verification code submission, and the manage customer payment flow) are implemented in `App.tsx`, ported in from a standalone Figma Make export. Remaining frames from the Figma file above (e.g. premium-paying flows) are still to be built out.
 
 ---
 
