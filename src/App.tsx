@@ -151,7 +151,7 @@ function Sidebar({ activeNav, onNavChange }: { activeNav: string; onNavChange: (
 
   return (
     <div
-      className={`bg-[#056257] h-full shrink-0 flex flex-col gap-[24px] pt-[24px] overflow-hidden transition-[width] duration-300 ease-in-out drop-shadow-[0px_24px_24px_rgba(109,109,109,0.4)] ${expanded ? "w-[240px]" : "w-[64px]"}`}
+      className={`bg-[#056257] sticky top-0 h-dvh shrink-0 flex flex-col gap-[24px] pt-[24px] overflow-hidden transition-[width] duration-300 ease-in-out drop-shadow-[0px_24px_24px_rgba(109,109,109,0.4)] ${expanded ? "w-[240px]" : "w-[64px]"}`}
     >
       {/* Header — always rendered, text fades out */}
       <div className={`flex items-center shrink-0 min-h-[44px] ${expanded ? "justify-between gap-[8px] px-[20px]" : "justify-center"}`}>
