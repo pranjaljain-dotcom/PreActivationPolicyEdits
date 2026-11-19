@@ -1,0 +1,11 @@
+{
+  "title": "Pre Activation Policy Edits",
+  "description": "Prototype for editing a policy's payment details before and after activation.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
