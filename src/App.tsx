@@ -2231,9 +2231,9 @@ function PolicyPage({ caseType }: { caseType: CaseType }) {
                 <div className="badges">
                   <button
                     className="status-badge"
-                    onClick={() => notify("Status: Submitted for Future Issuance")}
+                    onClick={() => notify(`Status: ${isPremiumPaying ? "Premium Paying" : "Submitted for Future Issuance"}`)}
                   >
-                    Submitted for Future Issuance
+                    {isPremiumPaying ? "Premium Paying" : "Submitted for Future Issuance"}
                   </button>
                   <div className="policy-badge">
                     Policy number: IUL002970733{" "}
