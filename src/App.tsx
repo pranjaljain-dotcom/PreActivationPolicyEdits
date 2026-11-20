@@ -143,7 +143,15 @@ const EthosLogo = () => (
   </svg>
 );
 
-function Sidebar({ activeNav, onNavChange }: { activeNav: string; onNavChange: (id: string) => void }) {
+function Sidebar({
+  activeNav,
+  onNavChange,
+  topOffset = 0,
+}: {
+  activeNav: string;
+  onNavChange: (id: string) => void;
+  topOffset?: number;
+}) {
   const [expanded, setExpanded] = useState(true);
   const [moreOpen, setMoreOpen] = useState(true);
 
@@ -151,7 +159,8 @@ function Sidebar({ activeNav, onNavChange }: { activeNav: string; onNavChange: (
 
   return (
     <div
-      className={`bg-[#056257] sticky top-0 h-dvh shrink-0 flex flex-col gap-[24px] pt-[24px] overflow-hidden transition-[width] duration-300 ease-in-out drop-shadow-[0px_24px_24px_rgba(109,109,109,0.4)] ${expanded ? "w-[240px]" : "w-[64px]"}`}
+      className={`bg-[#056257] sticky shrink-0 flex flex-col gap-[24px] pt-[24px] overflow-hidden transition-[width] duration-300 ease-in-out drop-shadow-[0px_24px_24px_rgba(109,109,109,0.4)] ${expanded ? "w-[240px]" : "w-[64px]"}`}
+      style={{ top: topOffset, height: `calc(100dvh - ${topOffset}px)` }}
     >
       {/* Header — always rendered, text fades out */}
       <div className={`flex items-center shrink-0 min-h-[44px] ${expanded ? "justify-between gap-[8px] px-[20px]" : "justify-center"}`}>
@@ -721,14 +730,16 @@ function SavedCoverageStep({
 function SavedPaymentMethodStep({
   method,
   onEdit,
+  stepNumber,
 }: {
   method: "bank" | "card";
   onEdit: () => void;
+  stepNumber: number;
 }) {
   return (
     <section className="compact-saved-step payment-saved-step">
       <h2>
-        <span>3.</span> Update payment method
+        <span>{stepNumber}.</span> Update payment method
       </h2>
       <div className="compact-saved-value payment">
         <div>
@@ -748,11 +759,13 @@ function PaymentMethodStep({
   supportsDirectExpress,
   onMethodChange,
   onSave,
+  stepNumber,
 }: {
   method: "bank" | "card";
   supportsDirectExpress: boolean;
   onMethodChange: (method: "bank" | "card") => void;
   onSave: () => void;
+  stepNumber: number;
 }) {
   const [accountType, setAccountType] = useState("Checking");
   const [routingNumber, setRoutingNumber] = useState("321237536");
@@ -766,7 +779,7 @@ function PaymentMethodStep({
   return (
     <section className="payment-method-step">
       <h2>
-        <span>3.</span> Update payment method
+        <span>{stepNumber}.</span> Update payment method
       </h2>
       <div className={`payment-method-content ${supportsDirectExpress ? "" : "bank-only"}`.trim()}>
         {supportsDirectExpress && (
@@ -876,9 +889,11 @@ function PaymentMethodStep({
 function PaymentPlanSummary({
   coverageStart,
   onContinue,
+  stepNumber,
 }: {
   coverageStart: "today" | "scheduled";
   onContinue: () => void;
+  stepNumber: number;
 }) {
   const coverageDate = coverageStart === "today" ? "January 15, 2026" : "January 30, 2026";
   const recurringDate = coverageStart === "today" ? "January 30, 2026" : "February 28, 2026";
@@ -888,7 +903,7 @@ function PaymentPlanSummary({
     <section className="plan-summary-step">
       <div className="plan-summary-heading">
         <h2>
-          <span>4.</span> Payment plan summary
+          <span>{stepNumber}.</span> Payment plan summary
         </h2>
         <button onClick={() => window.open("about:blank", "_blank")}>
           <Icon file="f03b6.svg" size={12} />
@@ -1225,15 +1240,19 @@ function PaymentSchedulePage({
   initialRoute,
   initialValue,
   initialStep = 1,
+  skipCoverageStep,
   onBack,
   onSave,
 }: {
   initialRoute: ScheduleRoute;
   initialValue: string;
   initialStep?: 1 | 2;
+  skipCoverageStep: boolean;
   onBack: () => void;
   onSave: (value: string, coverageStart: "today" | "scheduled") => void;
 }) {
+  const paymentMethodStepNumber = skipCoverageStep ? 2 : 3;
+  const summaryStepNumber = skipCoverageStep ? 3 : 4;
   const [route, setRoute] = useState<ScheduleRoute>(initialRoute);
   const [benefit, setBenefit] = useState(
     initialRoute === "ssb" ? "Social Security Benefits (SSB)" : "",
@@ -1288,7 +1307,7 @@ function PaymentSchedulePage({
     transitionUi(() => {
       setPendingSchedule(nextSchedule);
       if (route !== "ssb") setPaymentMethod("bank");
-      setActiveStep(2);
+      setActiveStep(skipCoverageStep ? 4 : 2);
     });
   };
 
@@ -1603,21 +1622,22 @@ function PaymentSchedulePage({
           />
         )}
 
-        {activeStep === 2 ? (
-          <CoverageStartStep
-            value={coverageStart}
-            onChange={setCoverageStart}
-            onSave={() => {
-              transitionUi(() => setActiveStep(3));
-            }}
-          />
-        ) : activeStep >= 3 ? (
-          <SavedCoverageStep coverageStart={coverageStart} onEdit={() => setActiveStep(2)} />
-        ) : (
-          <section className="collapsed-step step-two">
-            <span>2.</span> Coverage start date
-          </section>
-        )}
+        {!skipCoverageStep &&
+          (activeStep === 2 ? (
+            <CoverageStartStep
+              value={coverageStart}
+              onChange={setCoverageStart}
+              onSave={() => {
+                transitionUi(() => setActiveStep(3));
+              }}
+            />
+          ) : activeStep >= 3 ? (
+            <SavedCoverageStep coverageStart={coverageStart} onEdit={() => setActiveStep(2)} />
+          ) : (
+            <section className="collapsed-step step-two">
+              <span>2.</span> Coverage start date
+            </section>
+          ))}
         {activeStep === 4 ? (
           <>
             <PaymentMethodStep
@@ -1625,26 +1645,32 @@ function PaymentSchedulePage({
               supportsDirectExpress={route === "ssb"}
               onMethodChange={setPaymentMethod}
               onSave={() => transitionUi(() => setActiveStep(3))}
+              stepNumber={paymentMethodStepNumber}
             />
             <section className="collapsed-step step-four">
-              <span>4.</span> Payment plan summary
+              <span>{summaryStepNumber}.</span> Payment plan summary
             </section>
           </>
         ) : activeStep === 3 ? (
           <>
-            <SavedPaymentMethodStep method={paymentMethod} onEdit={() => setActiveStep(4)} />
+            <SavedPaymentMethodStep
+              method={paymentMethod}
+              onEdit={() => setActiveStep(4)}
+              stepNumber={paymentMethodStepNumber}
+            />
             <PaymentPlanSummary
               coverageStart={coverageStart}
               onContinue={() => setSubmissionScreen("esign")}
+              stepNumber={summaryStepNumber}
             />
           </>
         ) : (
           <>
             <section className="collapsed-step step-three">
-              <span>3.</span> Update payment method
+              <span>{paymentMethodStepNumber}.</span> Update payment method
             </section>
             <section className="collapsed-step step-four">
-              <span>4.</span> Payment plan summary
+              <span>{summaryStepNumber}.</span> Payment plan summary
             </section>
           </>
         )}
@@ -1805,7 +1831,7 @@ function CustomerPaymentCode({
 
   return (
     <div className="app-shell customer-payment-shell">
-      <Sidebar activeNav="customers" onNavChange={onClose} />
+      <Sidebar activeNav="customers" onNavChange={onClose} topOffset={CASE_SWITCHER_HEIGHT} />
       <main className="page">
         <header className="topbar customer-payment-topbar">
           <button className="customer-payment-back" onClick={onBack}>
@@ -1853,7 +1879,7 @@ function CustomerPaymentCode({
 function CustomerPaymentSuccess({ onBack, onClose }: { onBack: () => void; onClose: () => void }) {
   return (
     <div className="app-shell customer-payment-shell">
-      <Sidebar activeNav="customers" onNavChange={onClose} />
+      <Sidebar activeNav="customers" onNavChange={onClose} topOffset={CASE_SWITCHER_HEIGHT} />
       <main className="page">
         <header className="topbar customer-payment-topbar">
           <button className="customer-payment-back" onClick={onBack}>
@@ -1898,7 +1924,7 @@ function CustomerPaymentMethod({
 
   return (
     <div className="app-shell customer-payment-shell">
-      <Sidebar activeNav="customers" onNavChange={onClose} />
+      <Sidebar activeNav="customers" onNavChange={onClose} topOffset={CASE_SWITCHER_HEIGHT} />
       <main className="page">
         <header className="topbar customer-payment-topbar">
           <button className="customer-payment-back" onClick={onBack}>
@@ -2044,7 +2070,8 @@ function CustomerPaymentFlow({
   );
 }
 
-function PolicyPage() {
+function PolicyPage({ caseType }: { caseType: CaseType }) {
+  const isPremiumPaying = caseType === "premium-paying";
   const [activeNav, setActiveNav] = useState("customers");
   const [toast, setToast] = useState("");
   const [values, setValues] = useState(initialValues);
@@ -2139,6 +2166,7 @@ function PolicyPage() {
         initialRoute={scheduleRoute}
         initialValue={values[scheduleField]}
         initialStep={flowInitialStep}
+        skipCoverageStep={isPremiumPaying}
         onBack={() => {
           transitionUi(() => {
             setScheduleRoute(null);
@@ -2163,7 +2191,7 @@ function PolicyPage() {
 
   return (
     <div className="app-shell">
-      <Sidebar activeNav={activeNav} onNavChange={selectNav} />
+      <Sidebar activeNav={activeNav} onNavChange={selectNav} topOffset={CASE_SWITCHER_HEIGHT} />
       <main className="page">
         <header className="topbar" style={{ position: "sticky" }}>
           <button className="back-button" onClick={() => notify("Back to customers")}>
@@ -2268,8 +2296,16 @@ function PolicyPage() {
               <div className="info-banner">
                 <Icon file="11705.svg" size={24} />
                 <p>
-                  You can now edit <strong>coverage start date and payment schedule</strong> to
-                  match client funds.
+                  {isPremiumPaying ? (
+                    <>
+                      You can now edit <strong>payment schedule</strong> to match client funds.
+                    </>
+                  ) : (
+                    <>
+                      You can now edit <strong>coverage start date and payment schedule</strong> to
+                      match client funds.
+                    </>
+                  )}
                 </p>
                 <button className="text-link blue" onClick={() => startEdit("Payment schedule 1")}>
                   Edit
@@ -2293,8 +2329,8 @@ function PolicyPage() {
                 <Field
                   label="Start date"
                   value={values["Start date"]}
-                  action="Edit"
-                  onAction={openCoverageStartEdit}
+                  action={isPremiumPaying ? undefined : "Edit"}
+                  onAction={isPremiumPaying ? undefined : openCoverageStartEdit}
                 />
                 <Field
                   label="Payment schedule"
@@ -2482,8 +2518,59 @@ function PolicyPage() {
   );
 }
 
+/* ─── Case switcher (demo-only, always on top) ─────────────────── */
+
+type CaseType = "submitted" | "premium-paying";
+const CASE_SWITCHER_HEIGHT = 56;
+
+const CASE_OPTIONS: { id: CaseType; label: string }[] = [
+  { id: "submitted", label: "Submitted for Future Issuance" },
+  { id: "premium-paying", label: "Premium Paying" },
+];
+
+function CaseSwitcher({ caseType, onChange }: { caseType: CaseType; onChange: (c: CaseType) => void }) {
+  return (
+    <div
+      className="sticky top-0 z-50 w-full shrink-0 bg-white border-b border-[#e9e9e9] flex items-center gap-[16px] px-[24px]"
+      style={{ height: CASE_SWITCHER_HEIGHT }}
+    >
+      <span
+        className="font-['Theinhardt:Medium',sans-serif] text-[#a9a9a9] text-[12px] uppercase tracking-[0.96px] shrink-0"
+        style={{ fontFeatureSettings: '"case" 1' }}
+      >
+        Demo case
+      </span>
+      <div className="flex bg-[#f4f4f4] rounded-[8px] p-[2px] gap-[2px]">
+        {CASE_OPTIONS.map((option) => {
+          const isActive = caseType === option.id;
+          return (
+            <button
+              key={option.id}
+              onClick={() => onChange(option.id)}
+              className={`px-[14px] py-[6px] rounded-[6px] text-[14px] leading-[20px] border-none cursor-pointer transition-colors ${
+                isActive
+                  ? "bg-white text-[#056257] shadow-[0_1px_2px_rgba(16,24,40,0.06)] font-['Theinhardt:Medium',sans-serif]"
+                  : "bg-transparent text-[#7e7e7e] font-['Theinhardt:Regular',sans-serif]"
+              }`}
+              style={{ fontFeatureSettings: '"case" 1' }}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ─── App ───────────────────────────────────────────────────── */
 
 export default function App() {
-  return <PolicyPage />;
+  const [caseType, setCaseType] = useState<CaseType>("submitted");
+  return (
+    <>
+      <CaseSwitcher caseType={caseType} onChange={setCaseType} />
+      <PolicyPage caseType={caseType} />
+    </>
+  );
 }
