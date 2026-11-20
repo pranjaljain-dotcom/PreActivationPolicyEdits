@@ -2305,8 +2305,8 @@ function PolicyPage({ caseType }: { caseType: CaseType }) {
                     </>
                   ) : (
                     <>
-                      You can now edit <strong>coverage start date and payment schedule</strong> to
-                      match client funds.
+                      You can now edit <strong>coverage start date</strong> and{" "}
+                      <strong>payment schedule</strong> to match client funds.
                     </>
                   )}
                 </p>
