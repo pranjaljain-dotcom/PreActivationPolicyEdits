@@ -1728,9 +1728,31 @@ function PaymentLoadingIllustration() {
 }
 
 function CustomerPaymentLoading({ onComplete }: { onComplete: () => void }) {
+  const duration = 2000;
+  const [progress, setProgress] = useState(0);
+  const [filled, setFilled] = useState(false);
+
   useEffect(() => {
-    const timer = window.setTimeout(onComplete, 1600);
-    return () => window.clearTimeout(timer);
+    // The fill bar is driven by a CSS transition (compositor-driven, so it
+    // stays smooth even if the main thread is busy) — flip the width on the
+    // next frame so the 0% starting state has a chance to paint first.
+    const fillFrame = requestAnimationFrame(() => setFilled(true));
+
+    const start = performance.now();
+    let tickFrame: number;
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      setProgress(Math.min(100, Math.round((elapsed / duration) * 100)));
+      if (elapsed < duration) tickFrame = requestAnimationFrame(tick);
+    };
+    tickFrame = requestAnimationFrame(tick);
+
+    const timer = window.setTimeout(onComplete, duration);
+    return () => {
+      cancelAnimationFrame(fillFrame);
+      cancelAnimationFrame(tickFrame);
+      window.clearTimeout(timer);
+    };
   }, [onComplete]);
 
   return (
@@ -1744,10 +1766,15 @@ function CustomerPaymentLoading({ onComplete }: { onComplete: () => void }) {
           </p>
         </div>
         <div className="loading-progress">
-          <img src={`${A}/463f2.svg`} alt="" />
+          <div className="loading-progress-track">
+            <div
+              className="loading-progress-fill"
+              style={{ width: filled ? "100%" : "0%", transitionDuration: `${duration}ms` }}
+            />
+          </div>
           <div>
             <span>Almost there...</span>
-            <span>85%</span>
+            <span>{progress}%</span>
           </div>
         </div>
       </div>

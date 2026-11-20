@@ -1725,10 +1725,22 @@ html, body, #root {
   gap: 8px;
 }
 
-.loading-progress > img {
+.loading-progress-track {
   width: 400px;
   max-width: 100%;
   height: 8px;
+  border-radius: 4px;
+  background: rgba(5, 71, 66, 0.1);
+  overflow: hidden;
+}
+
+.loading-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: #054742;
+  width: 0%;
+  transition-property: width;
+  transition-timing-function: linear;
 }
 
 .loading-progress > div {
