@@ -1938,16 +1938,12 @@ function CustomerPaymentMethod({
             <div className="customer-payment-form">
               {paymentMethod === "bank" ? (
                 <>
-                  <label>
-                    <span>Account type</span>
-                    <select
-                      value={accountType}
-                      onChange={(event) => setAccountType(event.target.value)}
-                    >
-                      <option>Checking</option>
-                      <option>Savings</option>
-                    </select>
-                  </label>
+                  <MenuSelect
+                    label="Account type"
+                    value={accountType}
+                    options={["Checking", "Savings"]}
+                    onChange={setAccountType}
+                  />
                   <label>
                     <span>Routing number</span>
                     <input
