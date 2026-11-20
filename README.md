@@ -4,6 +4,8 @@ React + Vite + Tailwind prototype for editing a policy's payment details before 
 
 Figma source: [pre-and-post-activation-payment-edits](https://www.figma.com/design/jGjFYiG9ji3n0RRUZ2arv2/pre-and-post-activation-payment-edits)
 
+PRD: [docs/PRD.md](docs/PRD.md) ("PRD #128 Pre-Activation Policy Edits by Agents")
+
 ---
 
 ## Structure
