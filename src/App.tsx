@@ -2248,7 +2248,7 @@ function PolicyPage() {
                   You can now edit <strong>coverage start date and payment schedule</strong> to
                   match client funds.
                 </p>
-                <button className="text-link blue" onClick={() => startEdit("Start date")}>
+                <button className="text-link blue" onClick={() => startEdit("Payment schedule 1")}>
                   Edit
                 </button>
               </div>

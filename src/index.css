@@ -1820,6 +1820,19 @@ html, body, #root {
   view-transition-name: step-one;
 }
 
+/* An element with a view-transition-name is forced into its own stacking
+   context at all times (not just mid-transition), which traps any floating
+   dropdown rendered inside it below the *next* step's card (which has its
+   own view-transition-name). Drop the name while a dropdown is open inside
+   so it can stack normally; it's always closed again before Save triggers
+   the step transition, so the morph animation is unaffected. */
+.schedule-card:has(.menu-select-options),
+.schedule-card:has(.schedule-select-options),
+.schedule-card:has(.benefit-menu),
+.payment-method-step:has(.menu-select-options) {
+  view-transition-name: none;
+}
+
 .schedule-card-inner {
   padding: 24px;
 }
@@ -1883,12 +1896,15 @@ html, body, #root {
   transition:
     background-color 220ms ease,
     border-color 220ms ease,
-    box-shadow 220ms ease,
-    transform 220ms ease;
+    box-shadow 220ms ease;
 }
 
 .billing-card:hover {
-  transform: translateY(-1px);
+  /* box-shadow instead of transform: a transform creates a new stacking
+     context, which trapped dropdowns rendered inside the card (e.g. the
+     Calendar day "Specific day" select) behind later page content while
+     the card was hovered. */
+  box-shadow: 0 2px 4px rgba(39, 39, 39, 0.08);
 }
 
 .billing-card.selected {
