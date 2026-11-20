@@ -1307,7 +1307,10 @@ function PaymentSchedulePage({
     transitionUi(() => {
       setPendingSchedule(nextSchedule);
       if (route !== "ssb") setPaymentMethod("bank");
-      setActiveStep(skipCoverageStep ? 4 : 2);
+      // When the coverage step is skipped, land on the "payment method
+      // already saved" state (3) instead of opening it for editing (4) —
+      // it should only open once the user clicks its own Edit link.
+      setActiveStep(skipCoverageStep ? 3 : 2);
     });
   };
 
