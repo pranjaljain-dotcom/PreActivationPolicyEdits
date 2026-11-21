@@ -1993,7 +1993,11 @@ html, body, #root {
 }
 
 .billing-controls {
-  width: 100%;
+  /* Sits outside .billing-card-title's own flex row (as a sibling), so it
+     needs to re-create that row's 20px icon + 12px gap offset itself to
+     line up with the title text instead of the card's own left edge. */
+  width: calc(100% - 32px);
+  margin-left: 32px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2366,12 +2370,19 @@ html, body, #root {
   display: flex;
   align-items: center;
   gap: 8px;
+  /* Aligns with the billing-card-title text, which is indented past its
+     20px icon + 12px gap — .payment-options sits outside that title's own
+     flex row (as a sibling, not nested inside it), so it needs the same
+     32px offset to line up instead of sitting flush with the card edge. */
+  width: calc(100% - 32px);
+  margin-left: 32px;
   color: #525252;
   font-size: 14px;
   line-height: 20px;
 }
 
 .billing-controls .payment-options {
+  width: 100%;
   margin: 12px 0 0;
 }
 
@@ -3236,10 +3247,16 @@ html, body, #root {
   .billing-card {
     padding: 20px 14px;
   }
+  .billing-controls {
+    width: 100%;
+    margin-left: 0;
+  }
   .business-select-grid.specific {
     grid-template-columns: 1fr;
   }
   .payment-options {
+    width: 100%;
+    margin-left: 0;
     flex-wrap: wrap;
   }
   .saved-schedule-row {
