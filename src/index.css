@@ -1993,8 +1993,7 @@ html, body, #root {
 }
 
 .billing-controls {
-  width: calc(100% - 32px);
-  margin-left: 32px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2367,7 +2366,6 @@ html, body, #root {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: 32px;
   color: #525252;
   font-size: 14px;
   line-height: 20px;
@@ -2592,7 +2590,6 @@ html, body, #root {
 }
 
 .payment-method-content {
-  margin-left: 32px;
   padding-top: 8px;
 }
 
@@ -2708,7 +2705,6 @@ html, body, #root {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  margin-left: 32px;
   padding: 16px;
   border: 1px solid #e9e9e9;
   border-radius: 8px;
@@ -2761,10 +2757,6 @@ html, body, #root {
 .plan-summary-heading img {
   width: 12px;
   height: 12px;
-}
-
-.plan-summary-content {
-  margin-left: 32px;
 }
 
 .plan-summary-table {
@@ -2970,7 +2962,6 @@ html, body, #root {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-left: 32px;
 }
 
 .coverage-option {
@@ -3059,11 +3050,6 @@ html, body, #root {
 .coverage-option p {
   font-size: 16px;
   line-height: 24px;
-}
-
-.coverage-step > .schedule-save {
-  width: calc(100% - 32px);
-  margin-left: 32px;
 }
 
 @media (max-width: 1120px) {
@@ -3250,19 +3236,11 @@ html, body, #root {
   .billing-card {
     padding: 20px 14px;
   }
-  .billing-controls {
-    width: 100%;
-    margin-left: 0;
-  }
   .business-select-grid.specific {
     grid-template-columns: 1fr;
   }
   .payment-options {
-    margin-left: 0;
     flex-wrap: wrap;
-  }
-  .coverage-options {
-    padding-left: 0;
   }
   .saved-schedule-row {
     align-items: flex-start;
@@ -3272,15 +3250,6 @@ html, body, #root {
   .saved-schedule-row > strong {
     max-width: none;
     text-align: left;
-  }
-  .compact-saved-value,
-  .plan-summary-content,
-  .payment-method-content {
-    margin-left: 0;
-  }
-  .coverage-step > .schedule-save {
-    width: 100%;
-    margin-left: 0;
   }
 }
 
