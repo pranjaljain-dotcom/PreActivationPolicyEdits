@@ -1890,11 +1890,6 @@ html, body, #root {
   gap: 16px;
 }
 
-.billing-options.business-inset {
-  width: calc(100% - 36px);
-  margin-left: 36px;
-}
-
 .billing-card {
   width: 100%;
   display: flex;
@@ -3254,10 +3249,6 @@ html, body, #root {
   }
   .billing-card {
     padding: 20px 14px;
-  }
-  .billing-options.business-inset {
-    width: 100%;
-    margin-left: 0;
   }
   .billing-controls {
     width: 100%;

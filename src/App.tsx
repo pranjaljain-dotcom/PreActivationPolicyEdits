@@ -1400,9 +1400,7 @@ function PaymentSchedulePage({
                 </div>
               )}
 
-              <div
-                className={`billing-options ${initialRoute === "business" ? "business-inset" : ""}`}
-              >
+              <div className="billing-options">
                 <div
                   role="radio"
                   tabIndex={0}
