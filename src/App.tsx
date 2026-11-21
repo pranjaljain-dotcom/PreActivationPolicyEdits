@@ -1236,6 +1236,41 @@ function CoverageStartStep({
   );
 }
 
+function ExitConfirmModal({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
+  return (
+    <div className="modal-backdrop" role="presentation" onMouseDown={onStay}>
+      <div
+        className="exit-confirm-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="exit-confirm-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <div className="exit-confirm-top">
+          <div className="exit-confirm-header">
+            <h2 id="exit-confirm-title">Are you sure you want to leave?</h2>
+            <button className="exit-confirm-close" onClick={onStay} aria-label="Close">
+              <Icon file="exit-confirm-close.svg" size={14} />
+            </button>
+          </div>
+          <p>
+            Changes you&apos;ve made haven&apos;t been submitted yet. If you leave now, they&apos;ll
+            be lost.
+          </p>
+        </div>
+        <div className="exit-confirm-actions">
+          <button className="exit-confirm-primary" onClick={onStay}>
+            Continue editing
+          </button>
+          <button className="exit-confirm-secondary" onClick={onLeave}>
+            Yes, leave without saving
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PaymentSchedulePage({
   initialRoute,
   initialValue,
@@ -1256,6 +1291,8 @@ function PaymentSchedulePage({
   // Once billing is on Social Security, it can't be switched to Business
   // day / Calendar day — only the other direction (into SSB) is allowed.
   const nonSsbRoutesLocked = initialRoute === "ssb";
+  const [hasSavedChanges, setHasSavedChanges] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [route, setRoute] = useState<ScheduleRoute>(initialRoute);
   const [benefit, setBenefit] = useState(
     initialRoute === "ssb" ? "Social Security Benefits (SSB)" : "",
@@ -1308,6 +1345,7 @@ function PaymentSchedulePage({
           : businessSchedule;
     }
     transitionUi(() => {
+      setHasSavedChanges(true);
       setPendingSchedule(nextSchedule);
       if (route !== "ssb") setPaymentMethod("bank");
       // When the coverage step is skipped, land on the "payment method
@@ -1349,9 +1387,13 @@ function PaymentSchedulePage({
   }
 
   return (
+    <>
     <main className="schedule-page">
       <div className="schedule-container">
-        <button className="schedule-back" onClick={onBack}>
+        <button
+          className="schedule-back"
+          onClick={() => (hasSavedChanges ? setShowExitConfirm(true) : onBack())}
+        >
           <Icon file="d4005.svg" size={24} />
           <span>Back</span>
         </button>
@@ -1665,6 +1707,7 @@ function PaymentSchedulePage({
               value={coverageStart}
               onChange={setCoverageStart}
               onSave={() => {
+                setHasSavedChanges(true);
                 transitionUi(() => setActiveStep(3));
               }}
             />
@@ -1681,7 +1724,10 @@ function PaymentSchedulePage({
               method={paymentMethod}
               supportsDirectExpress={route === "ssb"}
               onMethodChange={setPaymentMethod}
-              onSave={() => transitionUi(() => setActiveStep(3))}
+              onSave={() => {
+                setHasSavedChanges(true);
+                transitionUi(() => setActiveStep(3));
+              }}
               stepNumber={paymentMethodStepNumber}
             />
             <section className="collapsed-step step-four">
@@ -1713,6 +1759,13 @@ function PaymentSchedulePage({
         )}
       </div>
     </main>
+    {showExitConfirm && (
+      <ExitConfirmModal
+        onStay={() => setShowExitConfirm(false)}
+        onLeave={onBack}
+      />
+    )}
+    </>
   );
 }
 
