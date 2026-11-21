@@ -1253,6 +1253,9 @@ function PaymentSchedulePage({
 }) {
   const paymentMethodStepNumber = skipCoverageStep ? 2 : 3;
   const summaryStepNumber = skipCoverageStep ? 3 : 4;
+  // Once billing is on Social Security, it can't be switched to Business
+  // day / Calendar day — only the other direction (into SSB) is allowed.
+  const nonSsbRoutesLocked = initialRoute === "ssb";
   const [route, setRoute] = useState<ScheduleRoute>(initialRoute);
   const [benefit, setBenefit] = useState(
     initialRoute === "ssb" ? "Social Security Benefits (SSB)" : "",
@@ -1500,12 +1503,15 @@ function PaymentSchedulePage({
 
                 <div
                   role="radio"
-                  tabIndex={0}
+                  tabIndex={nonSsbRoutesLocked ? -1 : 0}
                   aria-checked={route === "business"}
-                  className={`billing-card ${route === "business" ? "selected" : "muted"}`}
-                  onClick={() => setRoute("business")}
+                  aria-disabled={nonSsbRoutesLocked}
+                  className={`billing-card ${route === "business" ? "selected" : "muted"} ${nonSsbRoutesLocked ? "locked" : ""}`}
+                  onClick={() => {
+                    if (!nonSsbRoutesLocked) setRoute("business");
+                  }}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
+                    if (!nonSsbRoutesLocked && (event.key === "Enter" || event.key === " ")) {
                       setRoute("business");
                     }
                   }}
@@ -1564,12 +1570,15 @@ function PaymentSchedulePage({
 
                 <div
                   role="radio"
-                  tabIndex={0}
+                  tabIndex={nonSsbRoutesLocked ? -1 : 0}
                   aria-checked={route === "calendar"}
-                  className={`billing-card ${route === "calendar" ? "selected" : "muted"}`}
-                  onClick={() => setRoute("calendar")}
+                  aria-disabled={nonSsbRoutesLocked}
+                  className={`billing-card ${route === "calendar" ? "selected" : "muted"} ${nonSsbRoutesLocked ? "locked" : ""}`}
+                  onClick={() => {
+                    if (!nonSsbRoutesLocked) setRoute("calendar");
+                  }}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
+                    if (!nonSsbRoutesLocked && (event.key === "Enter" || event.key === " ")) {
                       setRoute("calendar");
                     }
                   }}
@@ -1623,6 +1632,21 @@ function PaymentSchedulePage({
             schedule={pendingSchedule}
             onEdit={() => setActiveStep(1)}
           />
+        )}
+
+        {initialRoute !== "ssb" && route === "ssb" && (
+          <div className="verification-banner">
+            <div className="verification-icon">
+              <Icon file="c051c.svg" size={20} />
+            </div>
+            <div>
+              <strong>Switching to Social Security Billing</strong>
+              <p>
+                Once saved, this payment schedule can&apos;t be changed back to Business day or
+                Calendar day billing.
+              </p>
+            </div>
+          </div>
         )}
 
         {!skipCoverageStep &&

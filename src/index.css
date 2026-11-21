@@ -1929,6 +1929,15 @@ html, body, #root {
   background: #f4f4f4;
 }
 
+.billing-card.locked {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.billing-card.locked:hover {
+  box-shadow: none;
+}
+
 .billing-card-title {
   width: 100%;
   display: flex;
