@@ -1385,6 +1385,21 @@ function PaymentSchedulePage({
                 </button>
               </div>
 
+              {initialRoute !== "ssb" && route === "ssb" && (
+                <div className="verification-banner">
+                  <div className="verification-icon">
+                    <Icon file="c051c.svg" size={20} />
+                  </div>
+                  <div>
+                    <strong>Switching to Social Security Billing</strong>
+                    <p>
+                      Once saved, this payment schedule can&apos;t be changed back to Business day
+                      or Calendar day billing.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               <div
                 className={`billing-options ${initialRoute === "business" ? "business-inset" : ""}`}
               >
@@ -1632,21 +1647,6 @@ function PaymentSchedulePage({
             schedule={pendingSchedule}
             onEdit={() => setActiveStep(1)}
           />
-        )}
-
-        {initialRoute !== "ssb" && route === "ssb" && (
-          <div className="verification-banner">
-            <div className="verification-icon">
-              <Icon file="c051c.svg" size={20} />
-            </div>
-            <div>
-              <strong>Switching to Social Security Billing</strong>
-              <p>
-                Once saved, this payment schedule can&apos;t be changed back to Business day or
-                Calendar day billing.
-              </p>
-            </div>
-          </div>
         )}
 
         {!skipCoverageStep &&
