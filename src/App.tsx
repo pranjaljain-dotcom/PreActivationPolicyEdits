@@ -1506,10 +1506,10 @@ function PaymentSchedulePage({
                         ))}
                     </div>
                   ) : (
-                    <div className="payment-options disabled-options">
+                    <div className="payment-options">
                       <span>Payment options:</span>
-                      <PaymentBadge disabled />
-                      <PaymentBadge kind="card" disabled />
+                      <PaymentBadge />
+                      <PaymentBadge kind="card" />
                     </div>
                   )}
                 </div>
@@ -1579,9 +1579,9 @@ function PaymentSchedulePage({
                     </div>
                   ) : (
                     !nonSsbRoutesLocked && (
-                      <div className="payment-options disabled-options">
+                      <div className="payment-options">
                         <span>Payment options:</span>
-                        <PaymentBadge disabled />
+                        <PaymentBadge />
                       </div>
                     )
                   )}
@@ -1632,9 +1632,9 @@ function PaymentSchedulePage({
                     </div>
                   ) : (
                     !nonSsbRoutesLocked && (
-                      <div className="payment-options disabled-options">
+                      <div className="payment-options">
                         <span>Payment options:</span>
-                        <PaymentBadge disabled />
+                        <PaymentBadge />
                       </div>
                     )
                   )}

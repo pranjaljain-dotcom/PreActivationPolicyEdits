@@ -1985,7 +1985,6 @@ html, body, #root {
 }
 
 .billing-card.muted .billing-card-title,
-.billing-card.muted .billing-card-title strong,
 .billing-card.muted .billing-card-title p {
   color: #7e7e7e;
 }
@@ -2411,8 +2410,7 @@ html, body, #root {
   height: 14px;
 }
 
-.payment-badge.disabled,
-.disabled-options {
+.payment-badge.disabled {
   color: #7e7e7e;
 }
 
