@@ -1537,7 +1537,11 @@ function PaymentSchedulePage({
                     )}
                     <div>
                       <strong style={{ marginTop: "-7px" }}>Business day / Payroll</strong>
-                      <p>Ethos auto-adjusts for weekends &amp; holidays.</p>
+                      <p>
+                        {nonSsbRoutesLocked
+                          ? "Not available for current policy"
+                          : "Ethos auto-adjusts for weekends & holidays."}
+                      </p>
                     </div>
                   </div>
                   {route === "business" ? (
@@ -1574,10 +1578,12 @@ function PaymentSchedulePage({
                       </div>
                     </div>
                   ) : (
-                    <div className="payment-options disabled-options">
-                      <span>Payment options:</span>
-                      <PaymentBadge disabled />
-                    </div>
+                    !nonSsbRoutesLocked && (
+                      <div className="payment-options disabled-options">
+                        <span>Payment options:</span>
+                        <PaymentBadge disabled />
+                      </div>
+                    )
                   )}
                 </div>
 
@@ -1604,7 +1610,11 @@ function PaymentSchedulePage({
                     )}
                     <div>
                       <strong style={{ marginTop: "-7px" }}>Calendar day</strong>
-                      <p>Always due on the exact same day.</p>
+                      <p>
+                        {nonSsbRoutesLocked
+                          ? "Not available for current policy"
+                          : "Always due on the exact same day."}
+                      </p>
                     </div>
                   </div>
                   {route === "calendar" ? (
@@ -1621,10 +1631,12 @@ function PaymentSchedulePage({
                       </div>
                     </div>
                   ) : (
-                    <div className="payment-options disabled-options">
-                      <span>Payment options:</span>
-                      <PaymentBadge disabled />
-                    </div>
+                    !nonSsbRoutesLocked && (
+                      <div className="payment-options disabled-options">
+                        <span>Payment options:</span>
+                        <PaymentBadge disabled />
+                      </div>
+                    )
                   )}
                 </div>
               </div>
