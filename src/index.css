@@ -1849,6 +1849,10 @@ html, body, #root {
   padding: 24px;
 }
 
+.schedule-card-inner > .verification-banner {
+  margin-bottom: 24px;
+}
+
 .schedule-heading {
   display: flex;
   align-items: center;
